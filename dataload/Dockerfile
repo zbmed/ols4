@@ -43,6 +43,10 @@ RUN cp -r /opt/ols/dataload/solr_config /opt/solr/server/solr
 
 RUN mkdir /tmp/out
 
+RUN rm -rf /tmp/media
+RUN mkdir /tmp/media
+ADD dataload/terminologies/ /tmp/media/
+
 RUN chown -R ols:ols /opt/* /tmp/out
 RUN chmod -R 777 /opt/* /tmp/out
 

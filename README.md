@@ -1,3 +1,48 @@
+This is the ZB MED branch for adaptations necessary for indexing terminologies for SemLookP. 
+
+Indexing is done on a VM:  
+ts/ols4: this forked OLS4 repository  
+ts/ols4/dataload/terminologies: terminologies to index   
+ts/ols4/dataload/configs: config.json must be here  
+ts/ols4/dataload/database-archives: final neo4j and solr archives  
+
+Disk space requirements for the NFDI4Health terminologies (August 2024):  
+
+Neo4j Docker volume: 94 GiB  
+Solr Docker volume: 21 GiB  
+Neo4j archive: 10 GiB  
+Solr archive: 11 GiB  
+Docker container : ~ 300 GiB  
+
+NCBITAXON  
+140 GiB Docker container  
+44 GiB neo4j result  
+10 GiB solr result  
+
+Hints:
+- dataload/Dockerfile is adapted to mount dataload/terminologies/ into /tmp/media of the dataload Docker container
+- in ols4/dataload/load_into_neo4j.sh is changed from `--read-buffer-size=16777216` to `--read-buffer-size=67108864` (solves Loinc issue)
+- adaptions in `dataload/rdf2json/src/main/java/uk/ac/ebi/rdf2json/annotators/LabelAnnotator.java` to clear default properties (solves Radlex issue)
+- after indexing, copy the nohup.out file for documentation
+- result data is in /var/lib/docker/volumes
+- for indexing, run
+```
+export OLS4_CONFIG=dataload/configs/terminologies.json
+export JAVA_OPTS="-Xms10G -Xmx35G"
+rm nohup.out
+nohup docker compose up --force-recreate --build --always-recreate-deps --attach-dependencies ols4-solr ols4-neo4j | ts '[%Y-%m-%d %H:%M:%S]' > nohup.out &
+```
+- compress:
+```
+sudo tar --use-compress-program="pigz --fast --recursive" -cf ts/database-archives/example_neo4j.tgz -C /var/lib/docker/volumes/ols4_ols4-neo4j-data/_data .
+sudo tar --use-compress-program="pigz --fast --recursive" -cf ts/database-archives/example_solr.tgz -C /var/lib/docker/volumes/ols4_ols4-solr-data/_data .
+```
+- copy to the cluster:
+```
+kubectl cp ts/database-archives/example_neo4j.tgz ols4-dataserver-7d9d8:/usr/share/nginx/html/example_neo4j.tgz
+kubectl cp ts/database-archives/example_solr.tgz ols4-dataserver-7d9d8:/usr/share/nginx/html/example_solr.tgz
+```
+
 <a href="https://github.com/EBISPOT/ols4/actions/workflows/test.yml"><img src="https://github.com/EBISPOT/ols4/actions/workflows/test.yml/badge.svg"/></a>
 
 OLS4 is available at <b>[https://www.ebi.ac.uk/ols4/](https://www.ebi.ac.uk/ols4/)</b>. Please report any issues to the
