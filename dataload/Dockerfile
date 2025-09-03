@@ -63,6 +63,7 @@ RUN mkdir /tmp/out
 
 
 
+
 ####
 #### EMBEDDINGS SUPPORT
 ####
@@ -86,6 +87,9 @@ RUN cd /opt/ols/dataload/embeddings/ols_top_k && uv sync --frozen
 ####
 ####
 
+RUN rm -rf /tmp/media
+RUN mkdir /tmp/media
+ADD dataload/terminologies/ /tmp/media/
 
 
 RUN chown -R ols:ols /opt/* /tmp/out
