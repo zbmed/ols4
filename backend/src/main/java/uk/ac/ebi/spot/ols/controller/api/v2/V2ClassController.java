@@ -14,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
+
+import com.google.gson.Gson;
+
 import uk.ac.ebi.spot.ols.controller.api.v2.helpers.DynamicQueryHelper;
 import uk.ac.ebi.spot.ols.controller.api.v2.responses.V2PagedAndFacetedResponse;
 import uk.ac.ebi.spot.ols.controller.api.v2.responses.V2PagedResponse;
@@ -29,10 +32,50 @@ import java.util.Map;
 
 import static uk.ac.ebi.ols.shared.DefinedFields.*;
 
-@Tag(name = "V2 Class Controller", description = "This endpoint provides access to class information.")
+@Tag(
+        name = "V2 Class Controller",
+        description = "This endpoint provides access to class information. \n\n" +
+                "**Additionally**, if you want to retrieve detailed information about class synonyms then you need to parse the response using the `synonymProperty` field. \n\n" +
+                "For each element of the synonymProperty array you can then find the detailed information about each synonym type within the response as each synonym type is a separate object. \n\n" +
+                "For further details about the meaning of different synonym types please refer to this link: [Synonym Documentation](https://ontology-development-kit.readthedocs.io/en/latest/Synonyms.html). \n\n" +
+                "### Example \n\n" +
+                "For example, for `Lactose Intolerance` class we have following `synonymProperty`: \n\n" +
+                "```json\n" +
+                "\"synonymProperty\": [ \n" +
+                "  \"http://www.geneontology.org/formats/oboInOwl#hasExactSynonym\", \n" +
+                "  \"http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym\" \n" +
+                "]\n" +
+                "``` \n\n" +
+                "and then for each of the elements such as ExactSynonym we have following separate object within the same json response: \n\n" +
+                "```json\n" +
+                "\"http://www.geneontology.org/formats/oboInOwl#hasExactSynonym\" : [ {\n" +
+                "    \"type\" : [ \"reification\" ],\n" +
+                "    \"value\" : \"LM - lactose malabsorption\",\n" +
+                "    \"axioms\" : [ {\n" +
+                "      \"http://www.geneontology.org/formats/oboInOwl#hasDbXref\" : \"DOID:10604\"\n" +
+                "    } ]\n" +
+                "  }, {\n" +
+                "    \"type\" : [ \"reification\" ],\n" +
+                "    \"value\" : \"lactose intolerance\",\n" +
+                "    \"axioms\" : [ {\n" +
+                "      \"http://www.w3.org/2000/01/rdf-schema#comment\" : \"preferred label from MONDO\"\n" +
+                "    }, {\n" +
+                "      \"http://www.geneontology.org/formats/oboInOwl#hasDbXref\" : [ \"DOID:10604\", \"MONDO:ambiguous\", \"NCIT:C3154\", \"icd11.foundation:1026224967\" ]\n" +
+                "    } ]\n" +
+                "  }, {\n" +
+                "    \"type\" : [ \"reification\" ],\n" +
+                "    \"value\" : \"lactose intolerance (disease)\",\n" +
+                "    \"axioms\" : [ {\n" +
+                "      \"http://www.geneontology.org/formats/oboInOwl#hasDbXref\" : [ \"MONDO:0009116\", \"https://orcid.org/0000-0002-6601-2165\" ]\n" +
+                "    } ]\n" +
+                "  } ]\n" +
+                "```"
+)
 @RestController
 @RequestMapping("/api/v2")
 public class V2ClassController {
+
+    Gson gson = new Gson();
 
     @Autowired
     V2ClassRepository classRepository;
@@ -176,14 +219,21 @@ public class V2ClassController {
             @Parameter(name = "class",
                     description = "The IRI of the class, this value must be double URL encoded",
                     example = "http%3A%2F%2Fwww.ebi.ac.uk%2Fefo%2FEFO_0000001") String iri,
-            @RequestParam(value = "lang", required = false, defaultValue = "en") String lang
+            @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+            @RequestParam(value = "includeObsoleteEntities", required = false, defaultValue = "false")
+            @Parameter(name = "includeObsoleteEntities",
+                    description = "A boolean parameter to specify if obsolete entities should be included or not. Default value is false.") boolean includeObsoleteEntities,
+            @RequestParam(value = "searchQuery", required = false)
+            @Parameter(name="searchQuery",
+                    description = "This parameter specify the search query text.",
+                    example = "liver disease") String searchQuery
     ) throws ResourceNotFoundException {
 
         iri = UriUtils.decode(iri, "UTF-8");
 
         return new ResponseEntity<>(
                 new V2PagedResponse<>(
-                    classRepository.getChildrenByOntologyId(ontologyId, pageable, iri, lang)
+                    classRepository.getChildrenByOntologyId(ontologyId, pageable, iri, includeObsoleteEntities, searchQuery, lang)
                 ),
                 HttpStatus.OK);
     }
@@ -202,14 +252,17 @@ public class V2ClassController {
             @Parameter(name = "class",
                     description = "The IRI of the class, this value must be double URL encoded",
                     example = "http%3A%2F%2Fwww.ebi.ac.uk%2Fefo%2FEFO_1000967") String iri,
-            @RequestParam(value = "lang", required = false, defaultValue = "en") String lang
+            @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+            @RequestParam(value = "includeObsoleteEntities", required = false, defaultValue = "false")
+            @Parameter(name = "includeObsoleteEntities",
+                    description = "A boolean parameter to specify if obsolete entities should be included or not. Default value is false.") boolean includeObsoleteEntities
     ) throws ResourceNotFoundException {
 
         iri = UriUtils.decode(iri, "UTF-8");
 
         return new ResponseEntity<>(
                 new V2PagedResponse<>(
-                    classRepository.getAncestorsByOntologyId(ontologyId, pageable, iri, lang)
+                    classRepository.getAncestorsByOntologyId(ontologyId, pageable, iri, includeObsoleteEntities, lang)
                 ),
                 HttpStatus.OK
         );
@@ -229,14 +282,17 @@ public class V2ClassController {
             @Parameter(name = "class",
                     description = "The IRI of the class, this value must be double URL encoded",
                     example = "http%3A%2F%2Fwww.ebi.ac.uk%2Fefo%2FEFO_0000001") String iri,
-            @RequestParam(value = "lang", required = false, defaultValue = "en") String lang
+            @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+            @RequestParam(value = "includeObsoleteEntities", required = false, defaultValue = "false")
+            @Parameter(name = "includeObsoleteEntities",
+                    description = "A boolean parameter to specify if obsolete entities should be included or not. Default value is false.") boolean includeObsoleteEntities
     ) throws ResourceNotFoundException {
 
         iri = UriUtils.decode(iri, "UTF-8");
 
         return new ResponseEntity<>(
                 new V2PagedResponse<>(
-                        classRepository.getHierarchicalChildrenByOntologyId(ontologyId, pageable, iri, lang)
+                        classRepository.getHierarchicalChildrenByOntologyId(ontologyId, pageable, iri, includeObsoleteEntities, lang)
                 ),
                 HttpStatus.OK);
     }
@@ -255,20 +311,21 @@ public class V2ClassController {
             @Parameter(name = "class",
                     description = "The IRI of the class, this value must be double URL encoded",
                     example = "http%3A%2F%2Fwww.ebi.ac.uk%2Fefo%2FEFO_1000967") String iri,
-            @RequestParam(value = "lang", required = false, defaultValue = "en") String lang
+            @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+            @RequestParam(value = "includeObsoleteEntities", required = false, defaultValue = "false")
+            @Parameter(name = "includeObsoleteEntities",
+                    description = "A boolean parameter to specify if obsolete entities should be included or not. Default value is false.") boolean includeObsoleteEntities
     ) throws ResourceNotFoundException {
 
         iri = UriUtils.decode(iri, "UTF-8");
 
         return new ResponseEntity<>(
                 new V2PagedResponse<>(
-                        classRepository.getHierarchicalAncestorsByOntologyId(ontologyId, pageable, iri, lang)
+                        classRepository.getHierarchicalAncestorsByOntologyId(ontologyId, pageable, iri, includeObsoleteEntities, lang)
                 ),
                 HttpStatus.OK
         );
     }
-
-
 
     // The ancestors of individuals are classes. So, the /ancestors endpoint is part of the Class controller.
     //
@@ -286,14 +343,17 @@ public class V2ClassController {
             @Parameter(name = "individual",
                     description = "The IRI of the individual, this value must be double URL encoded",
                     example = "http%3A%2F%2Fpurl.allotrope.org%2Fontologies%2Fprocess%23AFP_0003781") String iri,
-            @RequestParam(value = "lang", required = false, defaultValue = "en") String lang
+            @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+            @RequestParam(value = "includeObsoleteEntities", required = false, defaultValue = "false")
+            @Parameter(name = "includeObsoleteEntities",
+                    description = "A boolean parameter to specify if obsolete entities should be included or not. Default value is false.") boolean includeObsoleteEntities
     ) throws ResourceNotFoundException {
 
         iri = UriUtils.decode(iri, "UTF-8");
 
         return new ResponseEntity<>(
                 new V2PagedResponse<>(
-                    classRepository.getIndividualAncestorsByOntologyId(ontologyId, pageable, iri, lang)
+                    classRepository.getIndividualAncestorsByOntologyId(ontologyId, pageable, iri, includeObsoleteEntities, lang)
                 ),
                 HttpStatus.OK);
 
