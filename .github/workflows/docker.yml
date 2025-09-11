@@ -2,9 +2,9 @@ name: Build & publish ols4 images
 
 on:
   push:
-    branches: [ "dev", "stable" ]
+    branches: [ "dev-zbmed" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "dev-zbmed" ]
 
 env:
   REGISTRY: ghcr.io
