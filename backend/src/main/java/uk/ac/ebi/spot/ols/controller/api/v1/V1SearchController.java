@@ -42,6 +42,7 @@ import uk.ac.ebi.spot.ols.repository.transforms.RemoveLiteralDatatypesTransform;
 import uk.ac.ebi.spot.ols.repository.v1.JsonHelper;
 import uk.ac.ebi.spot.ols.repository.v1.V1OntologyRepository;
 import uk.ac.ebi.spot.ols.repository.v1.mappers.AnnotationExtractor;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import static uk.ac.ebi.ols.shared.DefinedFields.*;
 
@@ -61,6 +62,7 @@ public class V1SearchController {
 
     private static final Logger logger = LoggerFactory.getLogger(V1SearchController.class);
 
+    @TrackMatomo(actionName = "API Search Request")
     @RequestMapping(path = "/api/search", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public void search(
             @RequestParam("q")

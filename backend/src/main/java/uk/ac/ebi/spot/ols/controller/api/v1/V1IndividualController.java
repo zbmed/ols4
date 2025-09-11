@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import uk.ac.ebi.spot.ols.model.v1.V1Individual;
 import uk.ac.ebi.spot.ols.repository.v1.V1IndividualRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -50,6 +51,7 @@ public class V1IndividualController implements
         return resource;
     }
 
+    @TrackMatomo(actionName = "API Individual Request")
     @RequestMapping(path = "/{iri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Individual>> getAllIndividuals(
             @PathVariable("iri")
@@ -65,6 +67,7 @@ public class V1IndividualController implements
 
     }
 
+    @TrackMatomo(actionName = "API Individual Request")
     @RequestMapping(path = "", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Individual>> getAllIndividuals(
             @RequestParam(value = "iri", required = false)
@@ -97,7 +100,8 @@ public class V1IndividualController implements
 
         return new ResponseEntity<>(assembler.toModel(terms, individualAssembler), HttpStatus.OK);
     }
-    
+
+    @TrackMatomo(actionName = "API Individual Request")
     @RequestMapping(path = "/findByIdAndIsDefiningOntology/{iri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Individual>> getAllIndividualsByIdAndIsDefiningOntology(
             @PathVariable("iri")
@@ -111,9 +115,9 @@ public class V1IndividualController implements
         decoded = UriUtils.decode(termId, "UTF-8");
         return getAllIndividualsByIdAndIsDefiningOntology(decoded, null, null, lang, pageable, assembler);
 
-    }    
-    
-    
+    }
+
+    @TrackMatomo(actionName = "API Individual Request")
     @RequestMapping(path = "/findByIdAndIsDefiningOntology", 
     		produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, 
     		method = RequestMethod.GET)
@@ -148,8 +152,8 @@ public class V1IndividualController implements
 
         return new ResponseEntity<>(assembler.toModel(terms, individualAssembler), HttpStatus.OK);
     }
-    
 
+    @TrackMatomo(actionName = "API Individual Request")
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "EntityModel not found")
     @ExceptionHandler(ResourceNotFoundException.class)
     public void handleError(HttpServletRequest req, Exception exception) {

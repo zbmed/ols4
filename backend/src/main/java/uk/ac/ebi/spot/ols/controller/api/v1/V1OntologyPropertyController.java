@@ -25,6 +25,7 @@ import uk.ac.ebi.spot.ols.model.v1.V1Property;
 import uk.ac.ebi.spot.ols.repository.v1.V1JsTreeRepository;
 import uk.ac.ebi.spot.ols.repository.v1.V1PropertyRepository;
 import uk.ac.ebi.spot.ols.service.Neo4jClient;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ public class V1OntologyPropertyController {
     @Autowired
     Neo4jClient neo4jClient;
 
+    @TrackMatomo(actionName = "API Ontology Property Request")
     @RequestMapping(path = "/{onto}/properties", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> getAllPropertiesByOntology(
             @PathVariable("onto")
@@ -97,6 +99,7 @@ public class V1OntologyPropertyController {
         return new ResponseEntity<>( assembler.toModel(terms, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Property Request")
     @RequestMapping(path = "/{onto}/properties/roots", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> getRoots(
             @PathVariable("onto")
@@ -118,6 +121,7 @@ public class V1OntologyPropertyController {
         return new ResponseEntity<>( assembler.toModel(roots, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Property Request")
     @RequestMapping(path = "/{onto}/properties/{iri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<EntityModel<V1Property>> getProperty(
             @PathVariable("onto")
@@ -137,6 +141,7 @@ public class V1OntologyPropertyController {
         return new ResponseEntity<>( termAssembler.toModel(term), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Property Request")
     @RequestMapping(path = "/{onto}/properties/{iri}/parents", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> getParents(
             @PathVariable("onto")
@@ -157,6 +162,7 @@ public class V1OntologyPropertyController {
         return new ResponseEntity<>( assembler.toModel(parents, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Property Request")
     @RequestMapping(path = "/{onto}/properties/{iri}/children", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> children(
             @PathVariable("onto")
@@ -177,6 +183,7 @@ public class V1OntologyPropertyController {
         return new ResponseEntity<>( assembler.toModel(children, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Property Request")
     @RequestMapping(path = "/{onto}/properties/{iri}/descendants", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> descendants(
             @PathVariable("onto")
@@ -197,6 +204,7 @@ public class V1OntologyPropertyController {
         return new ResponseEntity<>( assembler.toModel(descendants, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Property Request")
     @RequestMapping(path = "/{onto}/properties/{iri}/ancestors", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> ancestors(
             @PathVariable("onto")
@@ -217,7 +225,7 @@ public class V1OntologyPropertyController {
         return new ResponseEntity<>( assembler.toModel(ancestors, termAssembler), HttpStatus.OK);
     }
 
-
+    @TrackMatomo(actionName = "API Ontology Property Request")
     @RequestMapping(path = "/{onto}/properties/{iri}/jstree/children/{nodeid}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<String> graphJsTreeChildren(
             @PathVariable("onto")
@@ -248,6 +256,7 @@ public class V1OntologyPropertyController {
         throw new ResourceNotFoundException();
     }
 
+    @TrackMatomo(actionName = "API Ontology Property Request")
     @RequestMapping(path = "/{onto}/properties/{iri}/jstree",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE},
             method = RequestMethod.GET)
@@ -278,6 +287,7 @@ public class V1OntologyPropertyController {
         throw new ResourceNotFoundException();
     }
 
+    @TrackMatomo(actionName = "API Ontology Property Request")
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "EntityModel not found")
     @ExceptionHandler(ResourceNotFoundException.class)
     public void handleError(HttpServletRequest req, Exception exception) {

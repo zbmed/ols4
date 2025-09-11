@@ -27,6 +27,7 @@ import uk.ac.ebi.spot.ols.model.v1.V1Term;
 import uk.ac.ebi.spot.ols.repository.v1.V1IndividualRepository;
 import uk.ac.ebi.spot.ols.repository.v1.V1JsTreeRepository;
 import uk.ac.ebi.spot.ols.service.Neo4jClient;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -57,6 +58,7 @@ public class V1OntologyIndividualController {
     @Autowired
     V1JsTreeRepository jsTreeRepository;
 
+    @TrackMatomo(actionName = "API Ontology Individual Request")
     @RequestMapping(path = "/{onto}/individuals", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Individual>> getAllIndividualsByOntology(
             @PathVariable("onto")
@@ -104,6 +106,7 @@ public class V1OntologyIndividualController {
         return new ResponseEntity<>(assembler.toModel(terms, individualAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Individual Request")
     @RequestMapping(path = "/{onto}/individuals/{iri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<EntityModel<V1Individual>> getIndividual(
             @PathVariable("onto")
@@ -123,6 +126,7 @@ public class V1OntologyIndividualController {
         return new ResponseEntity<>(individualAssembler.toModel(term), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Individual Request")
     @RequestMapping(path = "/{onto}/individuals/{iri}/types", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getDirectTypes(
             @PathVariable("onto")
@@ -145,6 +149,7 @@ public class V1OntologyIndividualController {
     }
 
 
+    @TrackMatomo(actionName = "API Ontology Individual Request")
     @RequestMapping(path = "/{onto}/individuals/{iri}/alltypes", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> ancestors(
             @PathVariable("onto")
@@ -165,6 +170,7 @@ public class V1OntologyIndividualController {
         return new ResponseEntity<>(assembler.toModel(ancestors, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Individual Request")
     @RequestMapping(path = "/{onto}/individuals/{iri}/jstree", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<String> getJsTree(
             @PathVariable("onto")
@@ -191,6 +197,7 @@ public class V1OntologyIndividualController {
         throw new ResourceNotFoundException();
     }
 
+    @TrackMatomo(actionName = "API Ontology Individual Request")
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "EntityModel not found")
     @ExceptionHandler(ResourceNotFoundException.class)
     public void handleError(HttpServletRequest req, Exception exception) {

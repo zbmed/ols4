@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.ac.ebi.spot.ols.repository.Validation;
 import uk.ac.ebi.spot.ols.repository.solr.OlsSolrClient;
 import uk.ac.ebi.spot.ols.repository.v1.V1OntologyRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class V1SuggestController {
     @Autowired
     private OlsSolrClient solrClient;
 
+    @TrackMatomo(actionName = "API Suggest Request")
     @RequestMapping(path = "/api/suggest", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public void suggest(
             @RequestParam("q") String query,
