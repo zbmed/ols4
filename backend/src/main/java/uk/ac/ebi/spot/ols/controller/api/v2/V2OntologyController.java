@@ -19,6 +19,8 @@ import uk.ac.ebi.spot.ols.controller.api.v2.helpers.DynamicQueryHelper;
 import uk.ac.ebi.spot.ols.controller.api.v2.responses.V2PagedAndFacetedResponse;
 import uk.ac.ebi.spot.ols.model.v2.V2Entity;
 import uk.ac.ebi.spot.ols.repository.v2.V2OntologyRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
+
 import static uk.ac.ebi.ols.shared.DefinedFields.*;
 
 import java.io.IOException;
@@ -39,6 +41,7 @@ public class V2OntologyController {
 
     private static final Logger logger = LoggerFactory.getLogger(V2OntologyController.class);
 
+    @TrackMatomo(actionName = "API V2 Ontology Request")
     @RequestMapping(path = "", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2PagedAndFacetedResponse<V2Entity>> getOntologies(
             @PageableDefault(size = 20, page = 0)
@@ -89,6 +92,7 @@ public class V2OntologyController {
                 HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Request")
     @RequestMapping(path = "/{onto}", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2Entity> getOntology(
             @PathVariable("onto")

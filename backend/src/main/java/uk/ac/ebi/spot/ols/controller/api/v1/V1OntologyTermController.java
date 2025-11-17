@@ -64,7 +64,6 @@ public class V1OntologyTermController {
     @Autowired
     Neo4jClient neo4jClient;
 
-    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms", produces = {MediaType.APPLICATION_JSON_VALUE,
         MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     private HttpEntity<PagedModel<V1Term>> termsByOntology(

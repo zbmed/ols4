@@ -20,6 +20,8 @@ import uk.ac.ebi.spot.ols.controller.api.v2.responses.V2PagedAndFacetedResponse;
 import uk.ac.ebi.spot.ols.controller.api.v2.responses.V2PagedResponse;
 import uk.ac.ebi.spot.ols.model.v2.V2Entity;
 import uk.ac.ebi.spot.ols.repository.v2.V2IndividualRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
+
 import static uk.ac.ebi.ols.shared.DefinedFields.*;
 
 import javax.validation.constraints.NotNull;
@@ -37,6 +39,7 @@ public class V2IndividualController {
     @Autowired
     V2IndividualRepository individualRepository;
 
+    @TrackMatomo(actionName = "API V2 Individual Request")
     @RequestMapping(path = "/individuals", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     public HttpEntity<V2PagedAndFacetedResponse<V2Entity>> getIndividuals(
             @PageableDefault(size = 20, page = 0)
@@ -87,6 +90,7 @@ public class V2IndividualController {
                 HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Individual Request")
     @RequestMapping(path = "/ontologies/{onto}/individuals", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     public HttpEntity<V2PagedAndFacetedResponse<V2Entity>> getIndividuals(
             @PageableDefault(size = 20, page = 0)
@@ -141,6 +145,7 @@ public class V2IndividualController {
                 HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Individual Request")
     @RequestMapping(path = "/ontologies/{onto}/individuals/{individual}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     public HttpEntity<V2Entity> getIndividual(
             @PathVariable("onto")
@@ -162,6 +167,7 @@ public class V2IndividualController {
     }
 
 
+    @TrackMatomo(actionName = "API V2 Ontology Individual Request")
     @RequestMapping(path = "/ontologies/{onto}/classes/{class}/individuals", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2PagedResponse<V2Entity>> getClassIndividuals(
             @PageableDefault(size = 20, page = 0)
