@@ -18,7 +18,10 @@ public class DynamicQueryHelper {
 
             if(k.equals("lang") || k.equals("search") || k.equals("searchFields")
                     || k.equals("boostFields") || k.equals("page") || k.equals("size") || k.equals("exactMatch")
-                        || k.equals("includeObsoleteEntities"))
+                        || k.equals("includeObsoleteEntities")
+                        || k.equals("excludeOntologyId")
+                        || k.equals("resolveReferences")
+                        || k.equals("manchesterSyntax"))
                 continue;
 
             newProps.put(k, properties.get(k));

@@ -1,8 +1,16 @@
 {
   "ontologies": [
     {
+      "id": "fma",
+      "ontology_purl": "http://purl.org/sig/ont/fma.owl"
+    },
+    {
       "id": "gold",
       "ontology_purl": "https://raw.githubusercontent.com/cmungall/gold-ontology/refs/heads/main/gold.owl"
+    },
+    {
+      "id": "doid",
+      "ontology_purl": "https://purl.obolibrary.org/obo/doid/translations/doid-international.owl"
     },
     {
       "id": "mondo",
@@ -1493,7 +1501,6 @@
       ],
       "hidden_property": [],
       "base_uri": [
-        "http://purl.obolibrary.org/obo/",
         "https://credit.niso.org/contributor-roles/"
       ],
       "reasoner": "none",
@@ -1527,7 +1534,6 @@
       ],
       "hidden_property": [],
       "base_uri": [
-        "http://purl.obolibrary.org/obo/",
         "http://id.nlm.nih.gov/mesh/"
       ],
       "reasoner": "none",
@@ -1561,7 +1567,6 @@
       ],
       "hidden_property": [],
       "base_uri": [
-        "http://purl.obolibrary.org/obo/",
         "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/"
       ],
       "reasoner": "none",
@@ -1595,7 +1600,6 @@
       ],
       "hidden_property": [],
       "base_uri": [
-        "http://purl.obolibrary.org/obo/",
         "http://identifiers.org/wikipathways/"
       ],
       "reasoner": "none",
@@ -1629,7 +1633,6 @@
       ],
       "hidden_property": [],
       "base_uri": [
-        "http://purl.obolibrary.org/obo/",
         "https://ror.org/"
       ],
       "reasoner": "none",
@@ -1637,17 +1640,106 @@
       "ontology_purl": "https://w3id.org/biopragmatics/resources/ror/ror.owl.gz"
     },
     {
-      "id": "complexportal",
+      "activity_status": "active",
+      "contact": {
+        "email": "mcarthua@mcmaster.ca",
+        "github": "agmcarthur",
+        "label": "Andrew G. McArthur",
+        "orcid": "0000-0002-1142-3063"
+      },
+      "description": "Antibiotic resistance genes and mutations",
+      "domain": "microbiology",
+      "homepage": "https://github.com/arpcard/aro",
+      "id": "aro",
+      "layout": "ontology_detail",
+      "license": {
+        "label": "CC BY 4.0",
+        "logo": "http://mirrors.creativecommons.org/presskit/buttons/80x15/png/by.png",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "mailing_list": "https://mailman.mcmaster.ca/mailman/listinfo/card-l",
+      "ontology_purl": "file:///mnt/nfs/local_ontologies/aro.owl",
+      "preferredPrefix": "ARO",
+      "publications": [
+        {
+          "id": "https://www.ncbi.nlm.nih.gov/pubmed/31665441",
+          "title": "CARD 2020: antibiotic resistome surveillance with the comprehensive antibiotic resistance database."
+        }
+      ],
+      "repository": "https://github.com/arpcard/aro",
+      "title": "Antibiotic Resistance Ontology",
+      "tracker": "https://github.com/arpcard/aro/issues"
+    },
+    {
+      "id": "gscmixs",
       "creator": [
-        "Sucharitha Balu"
+        "The Genomic Standards Consortium."
       ],
       "is_foundary": false,
-      "preferredPrefix": "complexportal",
-      "title": "Complex Portal",
-      "uri": "https://w3id.org/biopragmatics/resources/complexportal/complexportal.owl",
-      "description": "A database that describes manually curated macromolecular complexes and provides links to details about these complexes in other databases.",
-      "homepage": "https://www.ebi.ac.uk/complexportal",
-      "mailing_list": null,
+      "preferredPrefix": "gscmixs",
+      "title": "Minimum Information about any (x) Sequence (MIxS) standard",
+      "uri": "https://w3id.org/mixs",
+      "description": "An OWL representation of the Minimum Information for any (x) Standard (MIxS), managed by the Genomic Standards Consortium. This file is released by the Genomic Standards Consortium (GSC; https://www.gensc.org/) for use by anyone handling data or information about biological sequences.",
+      "homepage": "https://w3id.org/mixs",
+      "mailing_list": "gensc-cig@googlegroups.com",
+      "label_property": [
+        "owl:DatatypeProperty",
+        "rdfs:label",
+        "dcterms:title",
+        "schema1:keywords"
+      ],
+      "definition_property": [
+        "skos:definition"
+      ],
+      "base_uri": [
+        "MIXS:"
+      ],
+      "reasoner": "OWL2",
+      "oboSlims": false,
+      "ontology_purl": "https://w3id.org/mixs/mixs.owl.ttl"
+    },
+    {
+      "id": "ec",
+      "reasoner": "none",
+      "oboSlims": false,
+      "is_foundary": false,
+      "ontology_purl": "https://w3id.org/biopragmatics/resources/ec/ec.owl",
+      "creator": ["Kristian Axelsen"],
+      "preferredPrefix": "EC",
+      "title": "Enzyme Nomenclature",
+      "description": "The Enzyme Nomenclature (also known as the Enzyme Commission Code) is a species-agnostic controlled vocabulary for specific enzymes and an associated hierarchical classification into 7 main categories.\n\nThe Enzyme Nomenclature is maintained by the [Nomenclature Committee](https://iubmb.org/about/committees/nomenclature-committee/) of the International Union of Biochemistry and Molecular Biology (IUBMB). A detailed history of the nomenclature since the 1950s can be found [here](https://iubmb.qmul.ac.uk/enzyme/history.html).\n\nThere are few notable resources providing access to the Enzyme Nomenclature:\n\n<table class=\"table table-striped\"><thead><tr><th>Website</th><th>Homepage</td><th>Notes</td></tr></thead><tbody><tr><td>ExplorEnz</td><td><a href=\"https://www.enzyme-database.org\">https://www.enzyme-database.org</a></td><td>This is the resource officially recommended by IUBMB</td></tr><tr><td>IUBMB (via by Queen Mary)</td><td><a href=\"https://iubmb.qmul.ac.uk/enzyme\">https://iubmb.qmul.ac.uk/enzyme</a></td><td>This is a web-based version of the <a href=\"https://archive.org/details/enzymenomenclatu0000inte_d6c2\">1992 publication</a>.</td></tr><tr><td>IntEnz</td><td><a href=\"https://www.ebi.ac.uk/intenz\">https://www.ebi.ac.uk/intenz</a></td><td>Shutdown in 2024</td></tr><tr><td>ExPaSy</td><td><a href=\"https://enzyme.expasy.org\">https://enzyme.expasy.org</a></td></tr><tr><td>EnzymePortal</td><td><a href=\"https://www.ebi.ac.uk/enzymeportal\">https://www.ebi.ac.uk/enzymeportal</a></td><td></td></tr></tbody></table> Licensed under CC-BY-4.0.",
+      "uri": "https://www.enzyme-database.org/",
+      "homepage": "https://www.enzyme-database.org/",
+      "mailing_list": "kristian.axelsen@sib.swiss",
+      "label_property": "https://www.w3.org/2000/01/rdf-schema#label",
+      "definition_property": ["http://purl.org/dc/terms/description"],
+      "synonym_property": [
+        "http://www.geneontology.org/formats/oboInOwl#hasExactSynonym",
+        "http://www.geneontology.org/formats/oboInOwl#hasNarrowSynonym",
+        "http://www.geneontology.org/formats/oboInOwl#hasBroadSynonym",
+        "http://www.geneontology.org/formats/oboInOwl#hasCloseSynonym"
+      ],
+      "hierarchical_property": [
+        "https://www.w3.org/2000/01/rdf-schema#subClassOf"
+      ],
+      "hidden_property": [],
+      "base_uri": ["https://www.enzyme-database.org/query.php?ec="]
+    },
+    {
+      "id": "hgnc.genegroup",
+      "reasoner": "none",
+      "oboSlims": false,
+      "is_foundary": false,
+      "ontology_purl": "https://w3id.org/biopragmatics/resources/hgnc.genegroup/hgnc.genegroup.owl",
+      "creator": [
+        "Elspeth Bruford"
+      ],
+      "preferredPrefix": "hgnc.genegroup",
+      "title": "HGNC Gene Group",
+      "description": "The HGNC (HUGO Gene Nomenclature Committee) provides an approved gene name and symbol (short-form abbreviation) for each known human gene. All approved symbols are stored in the HGNC database, and each symbol is unique. In addition, HGNC also provides a unique numerical ID to identify gene families, providing a display of curated hierarchical relationships between families. Licensed under CC0-1.0.",
+      "uri": "https://www.genenames.org",
+      "homepage": "https://www.genenames.org",
+      "mailing_list": "elspeth@genenames.org",
       "label_property": "https://www.w3.org/2000/01/rdf-schema#label",
       "definition_property": [
         "http://purl.org/dc/terms/description"
@@ -1659,16 +1751,102 @@
         "http://www.geneontology.org/formats/oboInOwl#hasCloseSynonym"
       ],
       "hierarchical_property": [
-        "https://www.w3.org/2000/01/rdf-schema#subclassOf"
+        "https://www.w3.org/2000/01/rdf-schema#subClassOf"
       ],
       "hidden_property": [],
       "base_uri": [
-        "http://purl.obolibrary.org/obo/",
-        "https://www.ebi.ac.uk/complexportal/complex/"
-      ],
-      "reasoner": "none",
-      "oboSlims": false,
-      "ontology_purl": "https://w3id.org/biopragmatics/resources/complexportal/complexportal.owl"
+        "https://www.genenames.org/data/genegroup/#!/group/"
+      ]
+    },
+    {
+      "id": "aero",
+      "ontology_purl": "http://purl.obolibrary.org/obo/aero.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "bcgo",
+      "ontology_purl": "http://purl.obolibrary.org/obo/bcgo.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "bila",
+      "ontology_purl": "http://purl.obolibrary.org/obo/bila.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "caro",
+      "ontology_purl": "http://purl.obolibrary.org/obo/caro.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "emap",
+      "ontology_purl": "http://purl.obolibrary.org/obo/emap.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "eo",
+      "ontology_purl": "http://purl.obolibrary.org/obo/eo.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "epo",
+      "ontology_purl": "http://purl.obolibrary.org/obo/epo.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "ero",
+      "ontology_purl": "http://purl.obolibrary.org/obo/ero.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "fbsp",
+      "ontology_purl": "http://purl.obolibrary.org/obo/fbsp.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "ogi",
+      "ontology_purl": "http://purl.obolibrary.org/obo/ogi.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "omiabis",
+      "ontology_purl": "http://purl.obolibrary.org/obo/omiabis.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "sep",
+      "ontology_purl": "http://purl.obolibrary.org/obo/sep.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "tao",
+      "ontology_purl": "http://purl.obolibrary.org/obo/tao.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "vhog",
+      "ontology_purl": "http://purl.obolibrary.org/obo/vhog.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
+    },
+    {
+      "id": "vsao",
+      "ontology_purl": "http://purl.obolibrary.org/obo/vsao.owl",
+      "is_obsolete": false,
+      "is_deprecated": true
     }
   ]
 }
