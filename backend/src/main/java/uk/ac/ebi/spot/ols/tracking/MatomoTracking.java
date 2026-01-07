@@ -7,13 +7,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.matomo.java.tracking.MatomoRequest;
 import org.matomo.java.tracking.MatomoTracker;
-import org.matomo.java.tracking.servlet.JavaxHttpServletWrapper;
+import org.matomo.java.tracking.servlet.JakartaHttpServletWrapper;
 import org.matomo.java.tracking.servlet.ServletMatomoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -60,7 +60,7 @@ public class MatomoTracking {
             dims.put(1L, query);
 
             MatomoRequest matomoRequest = ServletMatomoRequest.fromServletRequest(
-                            JavaxHttpServletWrapper.fromHttpServletRequest(request))
+                            JakartaHttpServletWrapper.fromHttpServletRequest(request))
                     .siteId(siteId)
                     .actionName(actionName)
                     .visitorIp(clientIp)
