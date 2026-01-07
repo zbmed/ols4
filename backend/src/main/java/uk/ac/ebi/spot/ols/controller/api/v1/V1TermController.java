@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import uk.ac.ebi.spot.ols.model.v1.V1Term;
 import uk.ac.ebi.spot.ols.repository.v1.V1TermRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -43,6 +44,7 @@ public class V1TermController implements
     @Autowired
     V1TermAssembler termAssembler;
 
+    @TrackMatomo(actionName = "API Term Iri Request")
     @RequestMapping(path = "/{iri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getTermsByIri(@PathVariable("iri")
                                                          @Parameter(name = "iri",
@@ -59,6 +61,7 @@ public class V1TermController implements
         return getTerms(decoded, null, null, null, lang, pageable, assembler);
     }
 
+    @TrackMatomo(actionName = "API Term Request")
     @RequestMapping(path = "", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getTerms(
             @RequestParam(value = "iri", required = false)
@@ -105,6 +108,7 @@ public class V1TermController implements
         return new ResponseEntity<>(assembler.toModel(terms, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Term findByIdAndIsDefiningOntology Iri Request")
     @RequestMapping(path = "/findByIdAndIsDefiningOntology/{iri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getTermsByIdAndIsDefiningOntology(@PathVariable("iri")
                                                                              @Parameter(name = "iri",
@@ -120,6 +124,7 @@ public class V1TermController implements
         return getTermsByIdAndIsDefiningOntology(decoded, null, null, null, lang, pageable, assembler);
     }
 
+    @TrackMatomo(actionName = "API Term findByIdAndIsDefiningOntology Request")
     @RequestMapping(path = "/findByIdAndIsDefiningOntology", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getTermsByIdAndIsDefiningOntology(
             @RequestParam(value = "iri", required = false)
