@@ -45,13 +45,14 @@ kubectl cp ts/database-archives/example_solr.tgz ols4-dataserver-7d9d8:/usr/shar
 
 <a href="https://github.com/EBISPOT/ols4/actions/workflows/test.yml"><img src="https://github.com/EBISPOT/ols4/actions/workflows/test.yml/badge.svg"/></a>
 
-The Ontology Lookup Service (OLS) is a repository for biomedical ontologies that aims to provide a single point of access to the latest ontology versions. 
+The Ontology Lookup Service (OLS) is a repository for biomedical ontologies that aims to provide a single point of access to the latest ontology versions. It provides a [website](https://www.ebi.ac.uk/ols4/), [REST API](https://www.ebi.ac.uk/ols4/api-docs), and [MCP server](https://www.ebi.ac.uk/ols4/mcp).
 
 See also:
 
 * The public OLS instance at EMBL-EBI: <b>[https://www.ebi.ac.uk/ols4/](https://www.ebi.ac.uk/ols4/)</a></b>
 * [<i>OLS4: a new Ontology Lookup Service for a growing interdisciplinary knowledge ecosystem</i>](https://academic.oup.com/bioinformatics/article/41/5/btaf279/8125017)
-* [API documentation](https://www.ebi.ac.uk/ols4/help)
+* [REST API docs](https://www.ebi.ac.uk/ols4/api-docs)
+* MCP endpoint: `https://wwwdev.ebi.ac.uk/ols4/api/mcp/sse`
 
 If you use OLS in your work, please cite [our recent publication in <i>Bioinformatics</i>](https://academic.oup.com/bioinformatics/article/41/5/btaf279/8125017).
 

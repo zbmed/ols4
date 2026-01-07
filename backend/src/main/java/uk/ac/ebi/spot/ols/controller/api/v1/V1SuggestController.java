@@ -22,7 +22,7 @@ import uk.ac.ebi.spot.ols.repository.solr.OlsSolrClient;
 import uk.ac.ebi.spot.ols.repository.v1.V1OntologyRepository;
 import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;

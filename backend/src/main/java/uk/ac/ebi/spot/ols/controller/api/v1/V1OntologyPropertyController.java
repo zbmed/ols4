@@ -27,7 +27,7 @@ import uk.ac.ebi.spot.ols.repository.v1.V1PropertyRepository;
 import uk.ac.ebi.spot.ols.service.Neo4jClient;
 import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 @Tag(name = "Ontology Property Controller", description = "NOTE: For IRI parameters, the value must be URL encoded. " +
@@ -138,6 +138,7 @@ public class V1OntologyPropertyController {
 
         String decoded = UriUtils.decode(termId, "UTF-8");
         V1Property term = propertyRepository.findByOntologyAndIri(ontologyId, decoded, lang);
+        if (term == null) throw new ResourceNotFoundException("No property with id " + decoded + " in " + ontologyId);
         return new ResponseEntity<>( termAssembler.toModel(term), HttpStatus.OK);
     }
 

@@ -28,7 +28,7 @@ import uk.ac.ebi.spot.ols.model.v1.V1Ontology;
 import uk.ac.ebi.spot.ols.repository.v1.V1OntologyRepository;
 import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Simon Jupp
