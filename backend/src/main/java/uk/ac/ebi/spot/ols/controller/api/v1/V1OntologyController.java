@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.spot.ols.model.v1.V1Ontology;
 import uk.ac.ebi.spot.ols.repository.v1.V1OntologyRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -62,6 +63,7 @@ public class V1OntologyController implements
         return resource;
     }
 
+    @TrackMatomo(actionName = "API Ontology Request")
     @RequestMapping(path = "", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Ontology>> getOntologies(
             @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
@@ -72,7 +74,7 @@ public class V1OntologyController implements
         return new ResponseEntity<>( assembler.toModel(document, documentAssembler), HttpStatus.OK);
     }
 
-
+    @TrackMatomo(actionName = "API Ontology Request")
     @RequestMapping(path = "/{onto}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<EntityModel<V1Ontology>> getOntology(
             @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
@@ -86,6 +88,7 @@ public class V1OntologyController implements
         return new ResponseEntity<>( documentAssembler.toModel(document), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Request")
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "EntityModel not found")
     @ExceptionHandler(ResourceNotFoundException.class)
     public void handleError(HttpServletRequest req, Exception exception) {

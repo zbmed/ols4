@@ -42,6 +42,7 @@ import uk.ac.ebi.spot.ols.repository.transforms.RemoveLiteralDatatypesTransform;
 import uk.ac.ebi.spot.ols.repository.v1.JsonHelper;
 import uk.ac.ebi.spot.ols.repository.v1.V1OntologyRepository;
 import uk.ac.ebi.spot.ols.repository.v1.mappers.AnnotationExtractor;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import static uk.ac.ebi.ols.shared.DefinedFields.*;
 
@@ -61,6 +62,7 @@ public class V1SearchController {
 
     private static final Logger logger = LoggerFactory.getLogger(V1SearchController.class);
 
+    @TrackMatomo(actionName = "API Search Request")
     @RequestMapping(path = "/api/search", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public void search(
             @RequestParam("q")
@@ -148,8 +150,8 @@ public class V1SearchController {
 
                 solrQuery.set("bq",
                         IS_DEFINING_ONTOLOGY.getText() + ":\"true\"^100 " +
-                        "lowercase_label:\"" + query.toLowerCase() + "\"^5 " +
-                        "lowercase_synonym:\"" + query.toLowerCase() + "\"^3");
+                                "lowercase_label:\"" + query.toLowerCase() + "\"^5 " +
+                                "lowercase_synonym:\"" + query.toLowerCase() + "\"^3");
             }
         } else {
             if (exact) {
@@ -165,7 +167,7 @@ public class V1SearchController {
         }
 
         if (fieldList != null && fieldList.contains("score"))
-           solrQuery.setFields("_json","score");
+            solrQuery.setFields("_json","score");
         else
             solrQuery.setFields("_json");
 
@@ -241,21 +243,21 @@ public class V1SearchController {
 //        solrQuery.addFacetField("ontology_name", "ontology_prefix", "type", "subset", "is_defining_ontology", "is_obsolete");
 
         /*
-		 * Fix: Start issue -
-		 * https://github.com/EBISPOT/ols4/issues/613
-		 * Added new OLS4 faceFields
-		 *
-		 */
-		// TODO: Need to check and add additional faceted fields if required
-		solrQuery.addFacetField("ontologyId",
+         * Fix: Start issue -
+         * https://github.com/EBISPOT/ols4/issues/613
+         * Added new OLS4 faceFields
+         *
+         */
+        // TODO: Need to check and add additional faceted fields if required
+        solrQuery.addFacetField("ontologyId",
                 "ontologyIri",
                 "ontologyPreferredPrefix",
                 "type",
                 IS_DEFINING_ONTOLOGY.getText(),
                 IS_OBSOLETE.getText());
-		/*
-		 * Fix: End
-		 */
+        /*
+         * Fix: End
+         */
         solrQuery.add("wt", format);
 
         logger.debug("search: ()", solrQuery.toQueryString());
@@ -343,31 +345,31 @@ public class V1SearchController {
         responseBody.put("docs", docs);
 
         /*
-		 * Fix: Start issue -
-		 * https://github.com/EBISPOT/ols4/issues/613
-		 * Created facetFieldsMap: Start Gson not able to parse FacetField format -
-		 * [ontologyId:[efo (17140)] Converting FacetFied to Map format
-		 */
-		Map<String, List<String>> facetFieldsMap = parseFacetFields(qr.getFacetFields());
-		Map<String, Object> facetCounts = new HashMap<>();
-		facetCounts.put("facet_fields", facetFieldsMap);
-		/*
-		 * Fix: End
-		 */
+         * Fix: Start issue -
+         * https://github.com/EBISPOT/ols4/issues/613
+         * Created facetFieldsMap: Start Gson not able to parse FacetField format -
+         * [ontologyId:[efo (17140)] Converting FacetFied to Map format
+         */
+        Map<String, List<String>> facetFieldsMap = parseFacetFields(qr.getFacetFields());
+        Map<String, Object> facetCounts = new HashMap<>();
+        facetCounts.put("facet_fields", facetFieldsMap);
+        /*
+         * Fix: End
+         */
 
         Map<String, Object> responseObj = new HashMap<>();
         responseObj.put("responseHeader", responseHeader);
         responseObj.put("response", responseBody);
 
         /*
-		 * Fix: Start issue -
-		 * https://github.com/EBISPOT/ols4/issues/613
-		 * Added facet_counts to responseObj
-		 */
-		responseObj.put("facet_counts", facetCounts);
-		/*
-		 * Fix: End
-		 */
+         * Fix: Start issue -
+         * https://github.com/EBISPOT/ols4/issues/613
+         * Added facet_counts to responseObj
+         */
+        responseObj.put("facet_counts", facetCounts);
+        /*
+         * Fix: End
+         */
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -376,25 +378,25 @@ public class V1SearchController {
     }
 
     private Map<String, List<String>> parseFacetFields(List<FacetField> facetFields) {
-		Map<String, List<String>> facetFieldsMap = new HashMap<>();
-		List<String> newFacetFields;
-		if (facetFields != null && facetFields.size() > 0) {
-			for (FacetField ff : facetFields) {
-				List<Count> facetFieldCount = ff.getValues();
-				if (facetFieldsMap.containsKey(ff.getName()))
-					newFacetFields = facetFieldsMap.get(ff.getName());
-				else
-					newFacetFields = new ArrayList<>();
+        Map<String, List<String>> facetFieldsMap = new HashMap<>();
+        List<String> newFacetFields;
+        if (facetFields != null && facetFields.size() > 0) {
+            for (FacetField ff : facetFields) {
+                List<Count> facetFieldCount = ff.getValues();
+                if (facetFieldsMap.containsKey(ff.getName()))
+                    newFacetFields = facetFieldsMap.get(ff.getName());
+                else
+                    newFacetFields = new ArrayList<>();
 
-				for (Count ffCount : facetFieldCount) {
-					newFacetFields.add(ffCount.getName());
-					newFacetFields.add("" + ffCount.getCount());
-				}
-				facetFieldsMap.put(ff.getName(), newFacetFields);
-			}
-		}
-		return facetFieldsMap;
-	}
+                for (Count ffCount : facetFieldCount) {
+                    newFacetFields.add(ffCount.getName());
+                    newFacetFields.add("" + ffCount.getCount());
+                }
+                facetFieldsMap.put(ff.getName(), newFacetFields);
+            }
+        }
+        return facetFieldsMap;
+    }
 
     Function<String, String> addQuotes = new Function<String, String>() {
         @Override

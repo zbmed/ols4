@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import uk.ac.ebi.spot.ols.model.v1.V1Property;
 import uk.ac.ebi.spot.ols.repository.v1.V1PropertyRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,14 +46,15 @@ public class V1PropertyController implements
         return resource;
     }
 
+    @TrackMatomo(actionName = "API Property Request")
     @RequestMapping(path = "/{iri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> getPropertiesByIri(@PathVariable("iri")
                                                           @Parameter(name = "iri",
                                                                   description = "The IRI of the property, this value must be double URL encoded",
                                                                   example = "http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDUO_0000041") String termId,
-                                                              @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
-                                                              @Parameter(hidden = true) Pageable pageable,
-                                                              @Parameter(hidden = true) PagedResourcesAssembler assembler
+                                                          @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+                                                          @Parameter(hidden = true) Pageable pageable,
+                                                          @Parameter(hidden = true) PagedResourcesAssembler assembler
 
     ) throws ResourceNotFoundException {
 
@@ -61,6 +63,7 @@ public class V1PropertyController implements
         return getAllProperties(decoded, null, null, lang, pageable, assembler);
     }
 
+    @TrackMatomo(actionName = "API Property Request")
     @RequestMapping(path = "", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> getAllProperties(
             @RequestParam(value = "iri", required = false)
@@ -98,22 +101,24 @@ public class V1PropertyController implements
     }
 
 
+    @TrackMatomo(actionName = "API Property Request")
     @RequestMapping(path = "/findByIdAndIsDefiningOntology/{iri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> getPropertiesByIriAndIsDefiningOntology(@PathVariable("iri")
                                                                                @Parameter(name = "iri",
                                                                                        description = "The IRI of the property, this value must be double URL encoded",
                                                                                        example = "http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDUO_0000041") String termId,
-                                                                                   @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
-                                                                                   @Parameter(hidden = true) Pageable pageable,
-                                                                                   @Parameter(hidden = true) PagedResourcesAssembler assembler
+                                                                               @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+                                                                               @Parameter(hidden = true) Pageable pageable,
+                                                                               @Parameter(hidden = true) PagedResourcesAssembler assembler
 
     ) throws ResourceNotFoundException {
 
         String decoded = null;
         decoded = UriUtils.decode(termId, "UTF-8");
         return getPropertiesByIdAndIsDefiningOntology(decoded, null, null, lang, pageable, assembler);
-    }    
-    
+    }
+
+    @TrackMatomo(actionName = "API Property Request")
     @RequestMapping(path = "/findByIdAndIsDefiningOntology", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Property>> getPropertiesByIdAndIsDefiningOntology(
             @RequestParam(value = "iri", required = false)
@@ -149,7 +154,8 @@ public class V1PropertyController implements
 
         return new ResponseEntity<>( assembler.toModel(terms, termAssembler), HttpStatus.OK);
     }
-    
+
+    @TrackMatomo(actionName = "API Property Request")
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "EntityModel not found")
     @ExceptionHandler(ResourceNotFoundException.class)
     public void handleError(HttpServletRequest req, Exception exception) {

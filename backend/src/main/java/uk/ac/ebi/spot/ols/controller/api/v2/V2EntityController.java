@@ -18,6 +18,7 @@ import uk.ac.ebi.spot.ols.controller.api.v2.helpers.DynamicQueryHelper;
 import uk.ac.ebi.spot.ols.controller.api.v2.responses.V2PagedAndFacetedResponse;
 import uk.ac.ebi.spot.ols.model.v2.V2Entity;
 import uk.ac.ebi.spot.ols.repository.v2.V2EntityRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class V2EntityController {
     @Autowired
     V2EntityRepository entityRepository;
 
+    @TrackMatomo(actionName = "API V2 Entities Request")
     @RequestMapping(path = "/entities", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public HttpEntity<V2PagedAndFacetedResponse<V2Entity>> getEntities(
             @PageableDefault(size = 20, page = 0)
@@ -84,11 +86,12 @@ public class V2EntityController {
 
         return new ResponseEntity<>(
                 new V2PagedAndFacetedResponse<>(
-                    entityRepository.find(pageable, lang, search, searchFields, boostFields, facetFields, exactMatch, DynamicQueryHelper.filterProperties(properties))
-                        ),
-                    HttpStatus.OK);
+                        entityRepository.find(pageable, lang, search, searchFields, boostFields, facetFields, exactMatch, DynamicQueryHelper.filterProperties(properties))
+                ),
+                HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Entities Request")
     @RequestMapping(path = "/ontologies/{onto}/entities", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public HttpEntity<V2PagedAndFacetedResponse<V2Entity>> getTerms(
             @PageableDefault(size = 20, page = 0)
@@ -141,11 +144,12 @@ public class V2EntityController {
 
         return new ResponseEntity<>(
                 new V2PagedAndFacetedResponse<>(
-                    entityRepository.findByOntologyId(ontologyId, pageable, lang, search, searchFields, boostFields, facetFields, exactMatch, DynamicQueryHelper.filterProperties(properties))
+                        entityRepository.findByOntologyId(ontologyId, pageable, lang, search, searchFields, boostFields, facetFields, exactMatch, DynamicQueryHelper.filterProperties(properties))
                 ),
                 HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Entities Request")
     @RequestMapping(path = "/ontologies/{onto}/entities/{entity}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public HttpEntity<V2Entity> getEntity(
             @PathVariable("onto")

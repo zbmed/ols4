@@ -27,6 +27,7 @@ import uk.ac.ebi.spot.ols.repository.v1.V1GraphRepository;
 import uk.ac.ebi.spot.ols.repository.v1.V1JsTreeRepository;
 import uk.ac.ebi.spot.ols.repository.v1.V1TermRepository;
 import uk.ac.ebi.spot.ols.service.Neo4jClient;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -63,10 +64,9 @@ public class V1OntologyTermController {
     @Autowired
     Neo4jClient neo4jClient;
 
-
     @RequestMapping(path = "/{onto}/terms", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
-    private HttpEntity<PagedModel<V1Term>> termsByOntology(
+            MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
+    HttpEntity<PagedModel<V1Term>> termsByOntology(
             @PathVariable("onto")
             @Parameter(name = "onto",
                     description = "The ID of the ontology. For example for Data Use Ontology, the ID is duo.",
@@ -134,15 +134,16 @@ public class V1OntologyTermController {
         return id;
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/roots", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
+            MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getRoots(
             @PathVariable("onto")
             @Parameter(name = "onto",
                     description = "The ID of the ontology. For example for Data Use Ontology, the ID is duo.",
                     example = "duo") String ontologyId,
             @RequestParam(value = "includeObsoletes", defaultValue = "false", required = false)
-              boolean includeObsoletes,
+            boolean includeObsoletes,
             @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
             @Parameter(hidden = true) Pageable pageable,
             @Parameter(hidden = true) PagedResourcesAssembler assembler
@@ -151,19 +152,20 @@ public class V1OntologyTermController {
 
         Page<V1Term> roots = termRepository.getRoots(ontologyId, includeObsoletes, lang, pageable);
         if (roots == null)
-          throw new ResourceNotFoundException("No roots could be found for " + ontologyId );
+            throw new ResourceNotFoundException("No roots could be found for " + ontologyId );
         return new ResponseEntity<>( assembler.toModel(roots, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/preferredRoots", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
+            MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getPreferredRoots(
             @PathVariable("onto")
             @Parameter(name = "onto",
                     description = "The ID of the ontology. For example for Data Use Ontology, the ID is duo.",
                     example = "duo") String ontologyId,
             @RequestParam(value = "includeObsoletes", defaultValue = "false", required = false)
-              boolean includeObsoletes,
+            boolean includeObsoletes,
             @RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
             @Parameter(hidden = true)Pageable pageable,
             @Parameter(hidden = true) PagedResourcesAssembler assembler
@@ -171,16 +173,17 @@ public class V1OntologyTermController {
         ontologyId = ontologyId.toLowerCase();
 
         Page<V1Term> preferredRoots = termRepository.getPreferredRootTerms(ontologyId,
-            includeObsoletes, lang, pageable);
+                includeObsoletes, lang, pageable);
 
         if (preferredRoots == null)
-          throw new ResourceNotFoundException("No preferred roots could be found for " + ontologyId);
+            throw new ResourceNotFoundException("No preferred roots could be found for " + ontologyId);
         return new ResponseEntity<>(assembler.toModel(preferredRoots, preferredRootTermAssembler),
-            HttpStatus.OK);
+                HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
+            MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<EntityModel<V1Term>> getTerm(
             @PathVariable("onto")
             @Parameter(name = "onto",
@@ -198,13 +201,14 @@ public class V1OntologyTermController {
         String decoded = UriUtils.decode(termId, "UTF-8");
         V1Term term = termRepository.findByOntologyAndIri(ontologyId, decoded, lang);
         if (term == null) throw  new ResourceNotFoundException("No term with id " + decoded +
-            " in " + ontologyId);
+                " in " + ontologyId);
 
         return new ResponseEntity<>( termAssembler.toModel(term), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/parents", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
+            MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getParents(
             @PathVariable("onto")
             @Parameter(name = "onto",
@@ -227,8 +231,9 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(parents, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/hierarchicalParents", produces =
-      {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
+            {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getHierarchicalParents(
             @PathVariable("onto")
             @Parameter(name = "onto",
@@ -247,14 +252,15 @@ public class V1OntologyTermController {
         String decoded = UriUtils.decode(termId, "UTF-8");
         Page<V1Term> parents = termRepository.getHierarchicalParents(ontologyId, decoded, lang, pageable);
         if (parents == null)
-          throw new ResourceNotFoundException("No parents could be found for " + ontologyId
-              + " and " + termId);
+            throw new ResourceNotFoundException("No parents could be found for " + ontologyId
+                    + " and " + termId);
 
         return new ResponseEntity<>(assembler.toModel(parents, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/hierarchicalAncestors", produces =
-      {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
+            {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getHierarchicalAncestors(
             @PathVariable("onto")
             @Parameter(name = "onto",
@@ -272,16 +278,17 @@ public class V1OntologyTermController {
 
         String decoded = UriUtils.decode(termId, "UTF-8");
         Page<V1Term> parents = termRepository.getHierarchicalAncestors(ontologyId,
-            decoded, lang, pageable);
+                decoded, lang, pageable);
         if (parents == null)
-          throw new ResourceNotFoundException("No ancestors could be found for " + ontologyId
-              + " and " + termId);
+            throw new ResourceNotFoundException("No ancestors could be found for " + ontologyId
+                    + " and " + termId);
 
         return new ResponseEntity<>(assembler.toModel(parents, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/children", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
+            MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> children(
             @PathVariable("onto")
             @Parameter(name = "onto",
@@ -300,14 +307,15 @@ public class V1OntologyTermController {
         String decoded = UriUtils.decode(termId, "UTF-8");
         Page<V1Term> children = termRepository.getChildren(ontologyId, decoded, lang, pageable);
         if (children == null)
-          throw  new ResourceNotFoundException("No children could be found for " + ontologyId
-              + " and " + termId);
+            throw  new ResourceNotFoundException("No children could be found for " + ontologyId
+                    + " and " + termId);
 
         return new ResponseEntity<>( assembler.toModel(children, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/hierarchicalChildren", produces =
-      {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
+            {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getHierarchicalChildren(
             @PathVariable("onto")
             @Parameter(name = "onto",
@@ -325,17 +333,18 @@ public class V1OntologyTermController {
 
         String decoded = UriUtils.decode(termId, "UTF-8");
         Page<V1Term> children = termRepository.getHierarchicalChildren(ontologyId,
-            decoded, lang, pageable);
+                decoded, lang, pageable);
 
         if (children == null)
-          throw new ResourceNotFoundException("No hierarchical children could be found for "
-              + ontologyId + " and " + termId);
+            throw new ResourceNotFoundException("No hierarchical children could be found for "
+                    + ontologyId + " and " + termId);
 
         return new ResponseEntity<>(assembler.toModel(children, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/hierarchicalDescendants", produces =
-      {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
+            {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> getHierarchicalDescendants(
             @PathVariable("onto")
             @Parameter(name = "onto",
@@ -353,14 +362,15 @@ public class V1OntologyTermController {
 
         String decoded = UriUtils.decode(termId, "UTF-8");
         Page<V1Term> children = termRepository.getHierarchicalDescendants(ontologyId,
-            decoded, lang, pageable);
+                decoded, lang, pageable);
         if (children == null)
-          throw new ResourceNotFoundException("No hierarchical descendants could be found for "
-              + ontologyId + " and " + termId);
+            throw new ResourceNotFoundException("No hierarchical descendants could be found for "
+                    + ontologyId + " and " + termId);
 
         return new ResponseEntity<>( assembler.toModel(children, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/descendants", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> descendants(
             @PathVariable("onto")
@@ -383,9 +393,10 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(descendants, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/ancestors",
-        produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE},
-        method = RequestMethod.GET)
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE},
+            method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> ancestors(@PathVariable("onto")
                                              @Parameter(name = "onto",
                                                      description = "The ID of the ontology. For example for Data Use Ontology, the ID is duo.",
@@ -406,9 +417,10 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(ancestors, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/jstree",
-        produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE},
-        method = RequestMethod.GET)
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE},
+            method = RequestMethod.GET)
     HttpEntity<String> graphJsTree(
             @PathVariable("onto")
             @Parameter(name = "onto",
@@ -435,6 +447,7 @@ public class V1OntologyTermController {
         throw new ResourceNotFoundException();
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/jstree/children/{nodeid}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<String> graphJsTreeChildren(
             @PathVariable("onto")
@@ -465,6 +478,7 @@ public class V1OntologyTermController {
         throw new ResourceNotFoundException();
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/graph", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<String> graphJson(
             @PathVariable("onto")
@@ -491,6 +505,7 @@ public class V1OntologyTermController {
         throw new ResourceNotFoundException();
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/terms/{iri}/{property_iri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> related(@PathVariable("onto")
                                            @Parameter(name = "onto",
@@ -516,6 +531,7 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(related, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/children", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> termChildrenByOntology(
             @PathVariable("onto")
@@ -554,6 +570,7 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(terms, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/descendants", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> termDescendantsByOntology(
             @PathVariable("onto")
@@ -592,6 +609,7 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(terms, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/hierarchicalChildren", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> termHierarchicalChildrenByOntology(
             @PathVariable("onto")
@@ -630,6 +648,7 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(terms, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/hierarchicalDescendants", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> termHierarchicalDescendantsByOntology(
             @PathVariable("onto")
@@ -668,6 +687,7 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(terms, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/parents", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> termParentsByOntology(
             @PathVariable("onto")
@@ -706,6 +726,7 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(terms, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/ancestors", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> termAncestorsByOntology(
             @PathVariable("onto")
@@ -744,6 +765,7 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(terms, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @RequestMapping(path = "/{onto}/hierarchicalAncestors", produces = {MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE}, method = RequestMethod.GET)
     HttpEntity<PagedModel<V1Term>> termHierarchicalAncestorsByOntology(
             @PathVariable("onto")
@@ -782,6 +804,7 @@ public class V1OntologyTermController {
         return new ResponseEntity<>( assembler.toModel(terms, termAssembler), HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API Ontology Term Request")
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "EntityModel not found")
     @ExceptionHandler(ResourceNotFoundException.class)
     public void handleError(HttpServletRequest req, Exception exception) {

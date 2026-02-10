@@ -18,6 +18,7 @@ import uk.ac.ebi.spot.ols.controller.api.v2.responses.V2PagedAndFacetedResponse;
 import uk.ac.ebi.spot.ols.controller.api.v2.responses.V2PagedResponse;
 import uk.ac.ebi.spot.ols.model.v2.V2Entity;
 import uk.ac.ebi.spot.ols.repository.v2.V2PropertyRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import static uk.ac.ebi.ols.shared.DefinedFields.*;
 
@@ -37,6 +38,7 @@ public class V2PropertyController {
     @Autowired
     V2PropertyRepository propertyRepository;
 
+    @TrackMatomo(actionName = "API V2 Property Request")
     @RequestMapping(path = "/properties", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2PagedAndFacetedResponse<V2Entity>> getProperties(
             @PageableDefault(size = 20, page = 0)
@@ -82,11 +84,12 @@ public class V2PropertyController {
 
         return new ResponseEntity<>(
                 new V2PagedAndFacetedResponse<>(
-                    propertyRepository.find(pageable, lang, search, searchFields, boostFields, exactMatch, DynamicQueryHelper.filterProperties(properties))
+                        propertyRepository.find(pageable, lang, search, searchFields, boostFields, exactMatch, DynamicQueryHelper.filterProperties(properties))
                 ),
-                 HttpStatus.OK);
+                HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Property Request")
     @RequestMapping(path = "/ontologies/{onto}/properties", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2PagedAndFacetedResponse<V2Entity>> getProperties(
             @PageableDefault(size = 20, page = 0)
@@ -134,11 +137,12 @@ public class V2PropertyController {
 
         return new ResponseEntity<>(
                 new V2PagedAndFacetedResponse<>(
-                    propertyRepository.findByOntologyId(ontologyId, pageable, lang, search, searchFields, boostFields, exactMatch, DynamicQueryHelper.filterProperties(properties))
+                        propertyRepository.findByOntologyId(ontologyId, pageable, lang, search, searchFields, boostFields, exactMatch, DynamicQueryHelper.filterProperties(properties))
                 ),
                 HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Property Request")
     @RequestMapping(path = "/ontologies/{onto}/properties/{property}", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2Entity> getProperty(
             @PathVariable("onto")
@@ -159,6 +163,7 @@ public class V2PropertyController {
         return new ResponseEntity<>( entity, HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Property Request")
     @RequestMapping(path = "/ontologies/{onto}/properties/{property}/children", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2PagedResponse<V2Entity>> getChildrenByOntology(
             @PageableDefault(size = 20, page = 0)
@@ -180,11 +185,12 @@ public class V2PropertyController {
 
         return new ResponseEntity<>(
                 new V2PagedResponse<>(
-                    propertyRepository.getChildrenByOntologyId(ontologyId, pageable, iri, lang)
+                        propertyRepository.getChildrenByOntologyId(ontologyId, pageable, iri, lang)
                 ),
-                 HttpStatus.OK);
+                HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Property Request")
     @RequestMapping(path = "/ontologies/{onto}/properties/{property}/ancestors", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2PagedResponse<V2Entity>> getAncestorsByOntology(
             @PageableDefault(size = 20, page = 0)
@@ -206,7 +212,7 @@ public class V2PropertyController {
 
         return new ResponseEntity<>(
                 new V2PagedResponse<>(
-                propertyRepository.getAncestorsByOntologyId(ontologyId, pageable, iri, lang)
+                        propertyRepository.getAncestorsByOntologyId(ontologyId, pageable, iri, lang)
                 ), HttpStatus.OK);
     }
 
