@@ -19,6 +19,7 @@ import uk.ac.ebi.spot.ols.controller.api.v2.responses.V2PagedAndFacetedResponse;
 import uk.ac.ebi.spot.ols.controller.api.v2.responses.V2PagedResponse;
 import uk.ac.ebi.spot.ols.model.v2.V2Entity;
 import uk.ac.ebi.spot.ols.repository.v2.V2ClassRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class V2ClassController {
     @Autowired
     V2ClassRepository classRepository;
 
+    @TrackMatomo(actionName = "API V2 Ontology Class Request")
     @RequestMapping(path = "/classes", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2PagedAndFacetedResponse<V2Entity>> getClasses(
             @PageableDefault(size = 20, page = 0)
@@ -88,6 +90,7 @@ public class V2ClassController {
         );
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Class Request")
     @RequestMapping(path = "/ontologies/{onto}/classes", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public HttpEntity<V2PagedAndFacetedResponse<V2Entity>> getClasses(
             @PageableDefault(size = 20, page = 0)
@@ -142,6 +145,7 @@ public class V2ClassController {
                 HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Class Request")
     @RequestMapping(path = "/ontologies/{onto}/classes/{class}", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2Entity> getClass(
             @PathVariable("onto")
@@ -162,6 +166,7 @@ public class V2ClassController {
         return new ResponseEntity<>( entity, HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Class Request")
     @RequestMapping(path = "/ontologies/{onto}/classes/{class}/children", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public HttpEntity<V2PagedResponse<V2Entity>> getChildrenByOntology(
             @PageableDefault(size = 20, page = 0)
@@ -188,6 +193,7 @@ public class V2ClassController {
                 HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Class Request")
     @RequestMapping(path = "/ontologies/{onto}/classes/{class}/ancestors", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2PagedResponse<V2Entity>> getAncestorsByOntology(
             @PageableDefault(size = 20, page = 0)
@@ -215,6 +221,7 @@ public class V2ClassController {
         );
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Class Request")
     @RequestMapping(path = "/ontologies/{onto}/classes/{class}/hierarchicalChildren", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public HttpEntity<V2PagedResponse<V2Entity>> getHierarchicalChildrenByOntology(
             @PageableDefault(size = 20, page = 0)
@@ -241,6 +248,7 @@ public class V2ClassController {
                 HttpStatus.OK);
     }
 
+    @TrackMatomo(actionName = "API V2 Ontology Class Request")
     @RequestMapping(path = "/ontologies/{onto}/classes/{class}/hierarchicalAncestors", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2PagedResponse<V2Entity>> getHierarchicalAncestorsByOntology(
             @PageableDefault(size = 20, page = 0)
@@ -272,6 +280,7 @@ public class V2ClassController {
 
     // The ancestors of individuals are classes. So, the /ancestors endpoint is part of the Class controller.
     //
+    @TrackMatomo(actionName = "API V2 Ontology Class Request")
     @RequestMapping(path = "/ontologies/{onto}/individuals/{individual}/ancestors", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
     public HttpEntity<V2PagedResponse<V2Entity>> getIndividualAncestorsByOntology(
             @PageableDefault(size = 20, page = 0)

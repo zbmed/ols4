@@ -23,6 +23,7 @@ import uk.ac.ebi.spot.ols.repository.transforms.LocalizationTransform;
 import uk.ac.ebi.spot.ols.repository.transforms.RemoveLiteralDatatypesTransform;
 import uk.ac.ebi.spot.ols.repository.v1.JsonHelper;
 import uk.ac.ebi.spot.ols.repository.v1.V1OntologyRepository;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class V1SelectController {
 
     private static final Logger logger = LoggerFactory.getLogger(V1SelectController.class);
 
+    @TrackMatomo(actionName = "API Select Request")
     @RequestMapping(path = "/api/select", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public void select(
             @RequestParam("q")

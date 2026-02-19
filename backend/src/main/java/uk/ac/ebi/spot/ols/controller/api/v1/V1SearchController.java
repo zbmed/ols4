@@ -29,6 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import uk.ac.ebi.spot.ols.tracking.TrackMatomo;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -61,6 +62,7 @@ public class V1SearchController {
 
     private static final Logger logger = LoggerFactory.getLogger(V1SearchController.class);
 
+    @TrackMatomo(actionName = "API Search Request")
     @RequestMapping(path = "/api/search", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
     public void search(
             @RequestParam("q")
