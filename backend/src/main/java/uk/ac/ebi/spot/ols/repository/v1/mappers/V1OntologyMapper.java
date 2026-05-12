@@ -48,8 +48,16 @@ public class V1OntologyMapper {
         ontology.config.logo = JsonHelper.getString(localizedJson, "logo");
         ontology.config.creators = JsonHelper.getStrings(localizedJson, "creators");
         ontology.config.annotations = gson.fromJson(localizedJson.get("annotations"), Map.class);
-        ontology.config.fileLocation = JsonHelper.getString(localizedJson, ONTOLOGY_PURL.getText());
+        ontology.config.fileLocation = null;
         ontology.config.oboSlims = localizedJson.has("oboSlims") && localizedJson.get("oboSlims").getAsBoolean();
+
+        String ontologyPurl = JsonHelper.getString(localizedJson, ONTOLOGY_PURL.getText());
+        if (ontologyPurl != null &&
+                (ontologyPurl.startsWith("http://") || ontologyPurl.startsWith("https://"))) {
+            ontology.config.fileLocation = ontologyPurl;
+        } else {
+            ontology.config.fileLocation = null;
+        }
 
         ontology.config.labelProperty = JsonHelper.getString(localizedJson, "label_property");
 
